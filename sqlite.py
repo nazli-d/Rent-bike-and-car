@@ -25,7 +25,7 @@ cursor.execute('''
 # Kiralama tablosunu oluştur
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS kiralama (
-        musteri_id TEXT,
+        musteri_id INTEGER,
         araba_id INTEGER,
         kiralama_tipi TEXT,
         sure INTEGER,
@@ -33,7 +33,6 @@ cursor.execute('''
         durumu TEXT DEFAULT 'kiralandı',
         FOREIGN KEY (araba_id) REFERENCES arabalar (id),
         FOREIGN KEY (musteri_id) REFERENCES musteri(id)
-       
     )
 ''')
 

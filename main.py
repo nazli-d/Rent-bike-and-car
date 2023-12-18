@@ -48,7 +48,6 @@ class Kiralama:
         self.araba = araba
         self.kiralama_tipi = kiralama_tipi
         self.sure = sure
-        self.baslangic_tarihi = datetime.datetime.now()
 
     def hesapla_ucret(self):
         if self.kiralama_tipi == "günlük":
@@ -59,11 +58,6 @@ class Kiralama:
             print("Geçersiz kiralama tipi")
             return -1
 
-    def kiralama_bitir(self):
-        bitis_tarihi = datetime.datetime.now()
-        kiralama_suresi = (bitis_tarihi - self.baslangic_tarihi).total_seconds() / 3600
-
-        self.araba.set_kilometre(self.araba.get_kilometre() + kiralama_suresi * 10)  # 10 km/saat varsayalım
 
 class AracKiralamaUygulamasi:
     def __init__(self, root):
@@ -121,7 +115,8 @@ class AracKiralamaUygulamasi:
     def show_arac_list(self):
         araclar = self.get_arac_list()
 
-        self.tree_araclar = ttk.Treeview(self.main_frame, columns=("Marka", "Model", "Yıl", "Tip", "Durum"), show="headings")
+        self.tree_araclar = ttk.Treeview(self.main_frame, columns=("id", "Marka", "Model", "Yıl", "Tip", "Durum"), show="headings")
+        self.tree_araclar.heading("id", text="id")
         self.tree_araclar.heading("Marka", text="Marka")
         self.tree_araclar.heading("Model", text="Model")
         self.tree_araclar.heading("Yıl", text="Yıl")
@@ -137,13 +132,19 @@ class AracKiralamaUygulamasi:
         self.button_kirala.grid(row=2, column=0, columnspan=3, pady=10, sticky=(tk.W, tk.E))
 
     def get_arac_list(self):
-        self.cursor.execute("SELECT arabalar.id, marka, model, yil, tip, durumu FROM arabalar WHERE durumu = 'müsait'")
+        self.cursor.execute(
+            "SELECT arabalar.id, marka, model, yil, tip, durumu FROM arabalar WHERE durumu IN ('müsait', 'kiralandı')")
         return self.cursor.fetchall()
 
     def arac_kirala(self):
         selected_item = self.tree_araclar.selection()
         if selected_item:
             arac_id = self.tree_araclar.item(selected_item, "values")[0]
+            arac_durumu = self.tree_araclar.item(selected_item, "values")[5]                                        # Assuming status column is the sixth index
+
+            if arac_durumu == 'kiralandı':
+                messagebox.showwarning("Uyarı", "Bu araç zaten kiralanmış!")
+                return
 
             kiralama_tipi = self.show_kiralama_tipi_dialog()
             if kiralama_tipi:
@@ -165,7 +166,7 @@ class AracKiralamaUygulamasi:
                     ucret = kiralama.hesapla_ucret()
                     if ucret != -1:
                         messagebox.showinfo("Başarılı", f"Araç kiralandı! Ücret: {ucret} TL")
-                        kiralama.kiralama_bitir()
+                        self.root.destroy()
 
     def update_arac_durumu(self, arac_id):
         self.cursor.execute("UPDATE arabalar SET durumu = 'kiralandı' WHERE id = ?", (arac_id,))
@@ -218,7 +219,7 @@ class AracKiralamaUygulamasi:
         arac_data = self.cursor.fetchone()
 
         if arac_data:
-            arac_id, marka, model, yil, tip, durumu = arac_data
+            arac_id, marka, model, yil, tip, durumu,kilometre = arac_data
             if tip == 'Elektrikli':
                 elektrikli_arac = ElektrikliAraba(marka, model, yil, batarya_durumu="Yüksek")
                 elektrikli_arac.id = arac_id  # Set the id attribute
