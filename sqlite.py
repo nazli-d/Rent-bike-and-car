@@ -1,59 +1,77 @@
 import sqlite3
 
-baglanti = sqlite3.connect("rent-a.db")
-cursor = baglanti.cursor()
+# Veritabanı bağlantısını oluştur
+conn = sqlite3.connect('kiralama-1.db')
+cursor = conn.cursor()
 
+# Araba tablosunu güncelle
 cursor.execute('''
-    CREATE TABLE IF NOT EXISTS musteri (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        ad_soyad TEXT
-    )
-''')
-
-# Araba tablosunu oluştur
-cursor.execute('''
-    CREATE TABLE IF NOT EXISTS arabalar (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        marka TEXT,
-        model TEXT,
-        yil INTEGER,
-        tip TEXT,
+    CREATE TABLE IF NOT EXISTS araba (
+        araba_id INTEGER PRIMARY KEY AUTOINCREMENT,
         durumu TEXT DEFAULT 'müsait'
     )
 ''')
 
-# Kiralama tablosunu oluştur
+# Bisiklet tablosunu güncelle
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS bisiklet (
+        bisiklet_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        durumu TEXT DEFAULT 'müsait'    
+    )
+''')
+
+# Kiralama tablosunu güncelle
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS kiralama (
-        musteri_id INTEGER,
-        araba_id INTEGER,
+        id INTEGER PRIMARY KEY,
+        arac_id INTEGER,
+        arac_tipi TEXT,
         kiralama_tipi TEXT,
-        sure INTEGER,
-        ucret INTEGER,
-        durumu TEXT DEFAULT 'kiralandı',
-        FOREIGN KEY (araba_id) REFERENCES arabalar (id),
-        FOREIGN KEY (musteri_id) REFERENCES musteri(id)
+        kiralama_zamani DATETIME,
+        iade_zamani DATETIME ,
+        durumu TEXT DEFAULT 'kiralandı' ,
+        FOREIGN KEY (arac_id, arac_tipi) REFERENCES araba(araba_id, 'araba') 
+                                              ON DELETE CASCADE
+                                              ON UPDATE CASCADE,
+        FOREIGN KEY (arac_id, arac_tipi) REFERENCES bisiklet(bisiklet_id, 'bisiklet') 
+                                              ON DELETE CASCADE
+                                              ON UPDATE CASCADE,
+        CHECK (arac_tipi IN ('bisiklet', 'araba')),
+        CHECK (kiralama_tipi IN ('saatlik', 'gunluk', 'haftalik'))
     )
 ''')
 
 
+# Araba verilerini ekle
 
-# Elektrikli Arabalar
-cursor.execute("INSERT INTO arabalar (marka, model, yil, tip) VALUES ('Tesla', 'Model S', 2023, 'Elektrikli')")
-cursor.execute("INSERT INTO arabalar (marka, model, yil, tip) VALUES ('Porsche', 'Taycan', 2023, 'Elektrikli')")
-cursor.execute("INSERT INTO arabalar (marka, model, yil, tip) VALUES ('Audi', 'e-tron', 2023, 'Elektrikli')")
-cursor.execute("INSERT INTO arabalar (marka, model, yil, tip) VALUES ('Mercedes-Benz', 'EQC', 2023, 'Elektrikli')")
-cursor.execute("INSERT INTO arabalar (marka, model, yil, tip) VALUES ('Jaguar', 'I-PACE', 2023, 'Elektrikli')")
+cursor.execute("INSERT INTO araba (durumu) VALUES ('müsait')")
+cursor.execute("INSERT INTO araba (durumu) VALUES ('müsait')")
+cursor.execute("INSERT INTO araba (durumu) VALUES ('müsait')")
+cursor.execute("INSERT INTO araba (durumu) VALUES ('müsait')")
+cursor.execute("INSERT INTO araba (durumu) VALUES ('müsait')")
+cursor.execute("INSERT INTO araba (durumu) VALUES ('müsait')")
+cursor.execute("INSERT INTO araba (durumu) VALUES ('müsait')")
+cursor.execute("INSERT INTO araba (durumu) VALUES ('müsait')")
+cursor.execute("INSERT INTO araba (durumu) VALUES ('müsait')")
+cursor.execute("INSERT INTO araba (durumu) VALUES ('müsait')")
 
-# Benzinli Arabalar
-cursor.execute("INSERT INTO arabalar (marka, model, yil, tip) VALUES ('Mercedes-Benz', 'S-Class', 2023, 'Benzinli')")
-cursor.execute("INSERT INTO arabalar (marka, model, yil, tip) VALUES ('BMW', '7 Series', 2023, 'Benzinli')")
-cursor.execute("INSERT INTO arabalar (marka, model, yil, tip) VALUES ('Lexus', 'LS', 2023, 'Benzinli')")
-cursor.execute("INSERT INTO arabalar (marka, model, yil, tip) VALUES ('Audi', 'A8', 2023, 'Benzinli')")
-cursor.execute("INSERT INTO arabalar (marka, model, yil, tip) VALUES ('Porsche', 'Panamera', 2023, 'Benzinli')")
 
-baglanti.commit()
+# Bisiklet verilerini ekle
+cursor.execute("INSERT INTO bisiklet (durumu) VALUES ('müsait')")
+cursor.execute("INSERT INTO bisiklet (durumu) VALUES ('müsait')")
+cursor.execute("INSERT INTO bisiklet (durumu) VALUES ('müsait')")
+cursor.execute("INSERT INTO bisiklet (durumu) VALUES ('müsait')")
+cursor.execute("INSERT INTO bisiklet (durumu) VALUES ('müsait')")
+cursor.execute("INSERT INTO bisiklet (durumu) VALUES ('müsait')")
+cursor.execute("INSERT INTO bisiklet (durumu) VALUES ('müsait')")
+cursor.execute("INSERT INTO bisiklet (durumu) VALUES ('müsait')")
+cursor.execute("INSERT INTO bisiklet (durumu) VALUES ('müsait')")
+cursor.execute("INSERT INTO bisiklet (durumu) VALUES ('müsait')")
+
+
+
+# Veritabanı bağlantısını kaydet
+conn.commit()
+
 # Veritabanı bağlantısını kapat
-baglanti.close()
-
-
+conn.close()
