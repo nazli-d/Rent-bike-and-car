@@ -17,11 +17,16 @@ Bu proje, araba ve bisiklet kiralama işlemlerini yönetmek amacıyla geliştiri
 
 ## Ekran Görüntüleri
 
-![Ana Menü](screenshots/main_menu.png)
+![Ana Menü](https://github.com/nazli-d/Rent-bike-and-car/blob/main/image/ana-sayfa%20.png)
 
-![Bisiklet Kiralama Menüsü](screenshots/bike_menu.png)
+![Bisiklet Kiralama Menüsü](https://github.com/nazli-d/Rent-bike-and-car/blob/main/image/bisiklet-menu.png)
 
-![Araba Kiralama Menüsü](screenshots/car_menu.png)
+![İade etme](https://github.com/nazli-d/Rent-bike-and-car/blob/main/image/iade.png)
+
+![İade etme](https://github.com/nazli-d/Rent-bike-and-car/blob/main/image/iade-edildi.png)
+
+![Kiralama Tablosu](https://github.com/nazli-d/Rent-bike-and-car/blob/main/image/kiralama-tablosu.png)
+
 
 
 
